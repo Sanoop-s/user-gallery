@@ -5,7 +5,6 @@ import { computed } from 'vue';
 let userData = JSON.parse(localStorage.getItem('userLoggedin'));
 
 const address = computed(() => {
-    console.log(userData)
     return `${userData.Address.address},${userData.Address.city},${userData.Address.state} ${userData.Address.postalCode},${userData.Address.country}`
 })
 

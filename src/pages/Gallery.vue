@@ -1,9 +1,12 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
+import AddImgDialog from '../components/AddImgDialog.vue'
 
 const openModal = ref(false);
 const imageSrc = ref();
 const images = ref([]);
+const openSnack = ref(false);
+const snackText = ref(null)
 
 let userData = JSON.parse(localStorage.getItem('userLoggedin'));
 let imagesData = ref(JSON.parse(localStorage.getItem('galleryData')));
@@ -21,7 +24,6 @@ const openDialog = () => {
 
 const handleImageUpload = (e) => {
     var files = e.target.files || e.dataTransfer.files;
-    console.log(files)
     if (!files.length) return;
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -35,23 +37,27 @@ const handleRemoveImage = () => {
 
 };
 const onImageSave = () => {
+    if (imageSrc.valuev !== '') {
+        let data = {
+            id: userData.id,
+            likes: 0,
+            img: imageSrc.value,
+            liked_by: []
+        }
+        images.value.push(data)
+        localStorage.setItem('galleryData', JSON.stringify(images.value));
+        openModal.value = false;
+    } else {
 
-    let data = {
-        id: userData.id,
-        likes: 0,
-        img: imageSrc.value,
-        liked_by: []
+
     }
-    images.value.push(data)
-    localStorage.setItem('galleryData', JSON.stringify(images.value));
-    openModal.value = false;
+
 
 }
 
 const onLikeUnlike = (image) => {
     let currentUserId = userData.id;
     const index = image.liked_by.indexOf(currentUserId);
-    console.log(index);
     if (index === -1) {
         image.likes++;
         image.liked_by.push(currentUserId)
@@ -64,13 +70,11 @@ const onLikeUnlike = (image) => {
 
 const isImageLiked = (image) => {
     let currentUserId = userData.id;
-    console.log(image.liked_by.find((user) => user === currentUserId))
     return image.liked_by.find((user) => user === currentUserId);
 }
 
 const onClose = () => {
     openModal.value = false;
-
 }
 
 </script>
@@ -83,57 +87,9 @@ const onClose = () => {
                 <v-btn class="text-white float-right bg-cyan-darken-1" @click="openDialog">Add new</v-btn>
             </v-col>
         </v-row>
-        <v-dialog v-model="openModal" max-width="500">
-            <v-card class="pa-5">
-                <v-row>
-                    <v-col :cols="10">
-                        <span class="text-h6 font-weight-bold">Add new image</span>
-                    </v-col>
-                    <v-col :cols="2">
-                        <v-card style="width: 25px; height: 25px;"
-                            class="d-flex align-center justify-center float-right" @click="onClose">
-                            <span class="text-h6 ">x</span>
-                        </v-card>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-5">
-                    <v-col :cols="12" class="d-flex justify-center align-center">
-                        <div class="file-container position-relative cursor-pointer text-center "
-                            :class="{
-                                'w-100': $vuetify.display.smAndDown,
-                                'w-50': $vuetify.display.mdAndUp
-                            }">
-                            <div v-if="!imageSrc">
-                                <form
-                                    class="position-absolute cursor-pointer w-100 h-100 rounded-lg border-md border-dashed">
-                                    <input type="file" id="media" accept="image/*"
-                                        class="m-0 p-0 w-100 h-100 cursor-pointer opacity-0"
-                                        @change="(event) => { handleImageUpload(event) }" />
-                                    <div>
-                                        <section>
-                                            <v-icon>mdi-cloud-upload</v-icon>
-                                            <p class="mt-0">Upload image.</p>
-                                        </section>
-                                    </div>
-                                </form>
-                            </div>
-                            <div v-else class="image-uploaded potion-absolute w-100 border-sm rounded-lg d-flex">
-                                <div class="trash-div position-absolute text-end w-100 h-100">
-                                    <span class="trash text-red text-center position-absolute"
-                                        @click="handleRemoveImage"><v-icon>mdi-close-circle</v-icon></span>
-                                </div>
-                                <v-img :src="imageSrc" class="rounded-lg"></v-img>
-                            </div>
-                        </div>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col :cols="12">
-                        <v-btn class="text-white float-right bg-cyan-darken-1" @click="onImageSave">Save</v-btn>
-                    </v-col>
-                </v-row>
-            </v-card>
-        </v-dialog>
+        <AddImgDialog v-model:openModal="openModal" :imageSrc="imageSrc" @close="onClose"
+            @imageUpload="handleImageUpload" @removeImage="handleRemoveImage" @Save="onImageSave" />
+
         <v-row v-if="images.length === 0">
             <v-col :cols="12" class="d-flex justify-center">
                 <img src="../assets/noimg.png" />
@@ -163,36 +119,6 @@ const onClose = () => {
 </template>
 
 <style scoped>
-.file-container {
-    height: 160px;
-}
-
-.file-container form {
-    left: 0;
-}
-
-.file-container form input {
-    outline: none;
-}
-
-.file-container form section {
-    top: 55%;
-    margin-top: -100px;
-}
-
-.trash-div {
-    z-index: 1;
-}
-
-.trash {
-    margin-top: -12px;
-    z-index: 1;
-}
-
-.image-uploaded {
-    height: 160px;
-}
-
 .like {
     animation: pulse 0.2s linear;
     color: red;
