@@ -34,7 +34,8 @@ const onLogin = (item) => {
 }
 
 const formatDate = (item) => {
-    return date.format(item, 'keyboardDate')
+    console.log(item)
+    return date.format(item,'keyboardDate' )
 }
 
 
@@ -48,7 +49,7 @@ const formatDate = (item) => {
                     <v-card class="h-100 py-3 px-3 rounded-lg">
                         <v-data-table :headers="headers" :items="items" class="h-100  custom-scroll">
                             <template v-slot:item.birthDate="{ item }">
-                                {{ formatDate(item) }}
+                                {{ formatDate(item.birthDate) }}
                             </template>
                             <template v-slot:item.action="{ item }">
                                 <v-btn size="small" class="text-none text-white font-weight-bold bg-cyan-darken-1"

@@ -1,12 +1,18 @@
 <script setup>
 import { computed } from 'vue';
-
+import { useDate } from 'vuetify';
 
 let userData = JSON.parse(localStorage.getItem('userLoggedin'));
+const date = useDate();
 
 const address = computed(() => {
     return `${userData.Address.address},${userData.Address.city},${userData.Address.state} ${userData.Address.postalCode},${userData.Address.country}`
-})
+});
+
+const formatDate = (item) => {
+    return date.format(item, 'keyboardDate')
+}
+
 
 </script>
 <template>
@@ -26,7 +32,7 @@ const address = computed(() => {
                 <div class="text-center mt-3">
                     <p class="text-h5 font-weight-bold " style="color: #006171;">{{ userData.firstName }} {{
                         userData.lastName }}</p>
-                    <span class="text-subtitle-2 text-grey-darken-1">{{ userData.birthDate }}</span><span
+                    <span class="text-subtitle-2 text-grey-darken-1">{{ formatDate(userData.birthDate) }}</span><span
                         class="text-subtitle-2 text-grey-darken-1"> ({{ userData.age }} years old)</span>
 
                 </div>
@@ -46,7 +52,7 @@ const address = computed(() => {
                 </div>
                 <div class="text-subtitle-2 text-grey-darken-1 mt-5">
                     <v-row>
-                        <v-col :cols="12" sm="3" md="3" lg="3"  class="py-1 px-5">
+                        <v-col :cols="12" sm="3" md="3" lg="3" class="py-1 px-5">
                             <p>Email:</p>
                         </v-col>
                         <v-col :cols="12" sm="9" md="9" lg="9" class="text-right py-1 px-5 ">
