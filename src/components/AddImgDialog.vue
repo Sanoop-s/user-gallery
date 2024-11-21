@@ -36,7 +36,7 @@ const Save = () => {
 <template>
     <v-dialog v-model="computedValue" max-width="500">
         <v-card class="pa-5">
-            <v-row>
+            <VRow>
                 <v-col :cols="10">
                     <span class="text-h6 font-weight-bold">Add new image</span>
                 </v-col>
@@ -46,7 +46,7 @@ const Save = () => {
                         <span class="text-h6 ">x</span>
                     </v-card>
                 </v-col>
-            </v-row>
+            </VRow>
             <v-row class="mt-5">
                 <v-col :cols="12" class="d-flex justify-center align-center">
                     <div class="file-container position-relative cursor-pointer text-center " :class="{
@@ -58,7 +58,7 @@ const Save = () => {
                                 class="position-absolute cursor-pointer w-100 h-100 rounded-lg border-md border-dashed">
                                 <input type="file" id="media" accept="image/*"
                                     class="m-0 p-0 w-100 h-100 cursor-pointer opacity-0"
-                                    @change="(event) => { imageUpload(event) }" />
+                                    @change="(event) => { imageUpload(event) }"  />
                                 <div>
                                     <section>
                                         <v-icon>mdi-cloud-upload</v-icon>
@@ -67,8 +67,10 @@ const Save = () => {
                                 </div>
                             </form>
                         </div>
+                        
                         <div v-else class="image-uploaded potion-absolute w-100 border-sm rounded-lg d-flex">
                             <div class="trash-div position-absolute text-end w-100 h-100">
+                                {{ console.log(imageSrc) }}
                                 <span class="trash text-red text-center position-absolute"
                                     @click="removeImage"><v-icon>mdi-close-circle</v-icon></span>
                             </div>

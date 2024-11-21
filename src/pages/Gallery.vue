@@ -88,7 +88,7 @@ const onClose = () => {
             </v-col>
         </v-row>
         <AddImgDialog v-model:openModal="openModal" :imageSrc="imageSrc" @close="onClose"
-            @imageUpload="handleImageUpload" @removeImage="handleRemoveImage" @Save="onImageSave" />
+            @upload="handleImageUpload" @remove="handleRemoveImage" @Save="onImageSave" />
 
         <v-row v-if="images.length === 0">
             <v-col :cols="12" class="d-flex justify-center">
@@ -101,7 +101,7 @@ const onClose = () => {
                     <div class="d-flex align-center justify-center w-100">
                         <div class="w-100">
                             <v-card class="w-100 bg-grey-lighten-4" style="height: 160px;">
-                                <v-img :src="image.img" class="h-100 w-100"></v-img>
+                                <v-img :src="image.img" class="h-100 w-100" cover></v-img>
                             </v-card>
                             <div class="pa-3 w-100  border-none elevation-0">
                                 <v-icon :class="[{ 'like': isImageLiked(image) }, 'cursor-pointer mr-3']"
