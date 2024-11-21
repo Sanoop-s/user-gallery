@@ -43,7 +43,7 @@ const triggerInput = () => {
         <v-card class="pa-5">
             <VRow>
                 <v-col :cols="10">
-                    <span class="text-h6 font-weight-bold">Add new image</span>
+                    <span class="text-h6 font-weight-bold">Image</span>
                 </v-col>
                 <v-col :cols="2">
                     <v-card style="width: 25px; height: 25px;" class="d-flex align-center justify-center float-right"
