@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
+const inputRef = ref();
 
 const props = defineProps({
     openModal: {
@@ -21,14 +22,18 @@ const computedValue = computed({
 const onClose = () => {
     emit('close')
 }
-const imageUpload = (e) => {
-    emit('upload', e)
+const imageUpload = (file) => {
+    emit('upload', file)
 }
 const removeImage = () => {
     emit('remove')
 }
 const Save = () => {
     emit('save')
+}
+
+const triggerInput = () => {
+    inputRef.value?.click()
 }
 
 
@@ -52,13 +57,13 @@ const Save = () => {
                     <div class="file-container position-relative cursor-pointer text-center " :class="{
                         'w-100': $vuetify.display.smAndDown,
                         'w-50': $vuetify.display.mdAndUp
-                    }">
+                    }"> 
                         <div v-if="!imageSrc">
                             <form
-                                class="position-absolute cursor-pointer w-100 h-100 rounded-lg border-md border-dashed">
-                                <input type="file" id="media" accept="image/*"
-                                    class="m-0 p-0 w-100 h-100 cursor-pointer opacity-0"
-                                    @change="(event) => { imageUpload(event) }"  />
+                                class="position-absolute cursor-pointer w-100 h-100 rounded-lg border-md border-dashed"
+                                @click="triggerInput">
+                                <v-file-input class="m-0 p-0 w-100 h-100 cursor-pointer opacity-0 hidden" ref="inputRef"
+                                    @update:modelValue="imageUpload"></v-file-input>
                                 <div>
                                     <section>
                                         <v-icon>mdi-cloud-upload</v-icon>
@@ -67,10 +72,8 @@ const Save = () => {
                                 </div>
                             </form>
                         </div>
-                        
                         <div v-else class="image-uploaded potion-absolute w-100 border-sm rounded-lg d-flex">
                             <div class="trash-div position-absolute text-end w-100 h-100">
-                                {{ console.log(imageSrc) }}
                                 <span class="trash text-red text-center position-absolute"
                                     @click="removeImage"><v-icon>mdi-close-circle</v-icon></span>
                             </div>
@@ -81,8 +84,8 @@ const Save = () => {
             </v-row>
             <v-row>
                 <v-col :cols="12">
-                    <v-btn class="text-white float-right bg-cyan-darken-1 " :class="{'cursor-not-allowed':!imageSrc}" @click="Save"
-                        :disabled="!imageSrc">Save</v-btn>
+                    <v-btn class="text-white float-right bg-cyan-darken-1 " :class="{ 'cursor-not-allowed': !imageSrc }"
+                        @click="Save" :disabled="!imageSrc">Save</v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -113,6 +116,8 @@ const Save = () => {
 .trash {
     margin-top: -12px;
     z-index: 1;
+    margin-left: -20px;
+
 }
 
 .image-uploaded {

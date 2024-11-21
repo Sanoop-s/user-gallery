@@ -34,11 +34,10 @@ const onLogout = () => {
     <v-app>
         <div class="container">
             <v-layout class="h-screen">
-                <v-navigation-drawer class="pa-3 " v-model="drawer"  :permanent="$vuetify.display.lgAndUp">
-                    <span
-                        class="rounded  text-white font-weight-bold w-66 d-flex justify-center align-center "
+                <v-navigation-drawer class="pa-3 " v-model="drawer" :permanent="$vuetify.display.lgAndUp">
+                    <span class="rounded  text-white font-weight-bold w-66 d-flex justify-center align-center "
                         style="height: 43px;">
-                        <img src="../assets/logo.svg"/>
+                        <img src="../assets/logo.svg" />
                     </span>
                     <v-list class="d-block  py-10 ">
                         <v-list-item class="rounded d-flex align-center font-weight-medium text-subtitle-2"
@@ -55,15 +54,12 @@ const onLogout = () => {
                             <v-icon>mdi-menu</v-icon>
                         </v-btn>
                     </template>
-
                     <v-spacer></v-spacer>
-                    <v-flex class="mr-3">
+                    <v-card class="mr-3">
                         <v-img :src="userData.image" :width="50" />
-                    </v-flex>
+                    </v-card>
                     <p class="mr-3">{{ userData.firstName }} {{ userData.lastName }}</p>
-                    <v-flex>
-                        <v-icon icon="mdi-logout" size="large" @click="onLogout"></v-icon>
-                    </v-flex>
+                    <v-icon icon="mdi-logout" size="large" @click="onLogout"></v-icon>
                 </v-app-bar>
                 <v-main class=" overflow-x-auto bg-grey-lighten-4">
                     <router-view class="ma-10 "></router-view>
@@ -71,7 +67,6 @@ const onLogout = () => {
             </v-layout>
         </div>
     </v-app>
-
 </template>
 <style scoped>
 .v-list-item__overlay {
@@ -93,8 +88,10 @@ const onLogout = () => {
     font-weight: bold;
     border-left: 3px solid #00acc1;
 }
-.v-list-item--active span,.v-list-item--active .icon {
+
+.v-list-item--active span,
+.v-list-item--active .icon {
     color: #00acc1;
-    
+
 }
 </style>

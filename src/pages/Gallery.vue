@@ -1,35 +1,49 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import AddImgDialog from '../components/AddImgDialog.vue'
+import { VCol, VRow } from 'vuetify/components';
+import ImagesComponent from '../components/ImagesComponent.vue';
 
 const openModal = ref(false);
 const imageSrc = ref();
 const images = ref([]);
-const openSnack = ref(false);
-const snackText = ref(null)
+const tab = ref('All');
+const myImages = ref([]);
+const editId = ref(null);
+
 
 let userData = JSON.parse(localStorage.getItem('userLoggedin'));
 let imagesData = ref(JSON.parse(localStorage.getItem('galleryData')));
 
 onMounted(() => {
     if (imagesData.value?.length > 0) {
+        isMyImages()
         images.value = imagesData.value
     }
 })
 
-const openDialog = () => {
-    openModal.value = true
-    imageSrc.value = ''
+
+
+const openDialog = (img = null) => {
+    if (img) {
+        openModal.value = true
+        imageSrc.value = img.img
+        editId.value = img.id
+    } else {
+        openModal.value = true
+        imageSrc.value = ''
+    }
+
 }
 
-const handleImageUpload = (e) => {
-    var files = e.target.files || e.dataTransfer.files;
-    if (!files.length) return;
+const handleImageUpload = (file) => {
+    var files = file;
     const reader = new FileReader();
     reader.onload = (event) => {
         imageSrc.value = event.target.result;
     }
-    reader.readAsDataURL(files[0]);
+    reader.readAsDataURL(files);
+
 };
 
 const handleRemoveImage = () => {
@@ -37,22 +51,35 @@ const handleRemoveImage = () => {
 
 };
 const onImageSave = () => {
-    if (imageSrc.valuev !== '') {
-        let data = {
-            id: userData.id,
-            likes: 0,
-            img: imageSrc.value,
-            liked_by: []
+    myImages.value = []
+    if (imageSrc.value !== '') {
+        if (editId.value) {
+            const index = imagesData.value.findIndex((img) => img.id === editId.value);
+            console.log(imageSrc.value,imagesData.value[index].img)
+            if (imageSrc.value !== imagesData.value[index].img) {
+                imagesData.value[index].liked_by = []
+                imagesData.value[index].likes = 0
+            }
+            imagesData.value[index].img = imageSrc.value;
+            localStorage.setItem('galleryData', JSON.stringify(imagesData.value));
+            openModal.value = false;
+        } else {
+            let data = {
+                id: Math.ceil(Math.random() * 1000000),
+                likes: 0,
+                img: imageSrc.value,
+                liked_by: [],
+                userId: userData.id
+            }
+            images.value.push(data)
+            localStorage.setItem('galleryData', JSON.stringify(images.value));
+            openModal.value = false;
+            tab.value = tab.value
         }
-        images.value.push(data)
-        localStorage.setItem('galleryData', JSON.stringify(images.value));
-        openModal.value = false;
+        isMyImages()
+
     } else {
-
-
     }
-
-
 }
 
 const onLikeUnlike = (image) => {
@@ -77,67 +104,48 @@ const onClose = () => {
     openModal.value = false;
 }
 
+const isMyImages = () => {
+    let currentUserId = userData.id;
+    console.log(imagesData)
+    imagesData.value?.forEach(element => {
+        if (element.userId === currentUserId) {
+            myImages.value.push(element)
+        }
+    });
+}
+
 </script>
 <template>
     <v-card class="pa-5">
-        <span class="text-h6 font-weight-bold">Gallery</span>
-        <v-divider></v-divider>
-        <v-row class="mt-3">
-            <v-col :cols="12">
+        <v-row>
+            <v-col :cols="8">
+                <span class="text-h6 font-weight-bold">Gallery</span>
+            </v-col>
+            <v-col :cols="4">
                 <v-btn class="text-white float-right bg-cyan-darken-1" @click="openDialog">Add new</v-btn>
             </v-col>
         </v-row>
-        <AddImgDialog v-model:openModal="openModal" :imageSrc="imageSrc" @close="onClose"
-            @upload="handleImageUpload" @remove="handleRemoveImage" @Save="onImageSave" />
-
-        <v-row v-if="images.length === 0">
-            <v-col :cols="12" class="d-flex justify-center">
-                <img src="../assets/noimg.png" />
-            </v-col>
-        </v-row>
+        <v-divider class="mt-2"></v-divider>
         <v-row>
-            <v-col :cols="12" sm="6" md="4" lg="3" xl="2" v-for="image in images">
-                <v-card class="d-flex align-center justify-center rounded-lg  pa-5 pb-0 w-100">
-                    <div class="d-flex align-center justify-center w-100">
-                        <div class="w-100">
-                            <v-card class="w-100 bg-grey-lighten-4" style="height: 160px;">
-                                <v-img :src="image.img" class="h-100 w-100" cover></v-img>
-                            </v-card>
-                            <div class="pa-3 w-100  border-none elevation-0">
-                                <v-icon :class="[{ 'like': isImageLiked(image) }, 'cursor-pointer mr-3']"
-                                    @click="onLikeUnlike(image)">{{ isImageLiked(image) ?
-                                        'mdi-heart' : 'mdi-heart-outline' }}
-                                </v-icon>
-                                <span>{{ image.likes }} Likes</span>
-                            </div>
-                        </div>
-                    </div>
-                </v-card>
+            <v-col :cols="12">
+                <v-tabs color="cyan-darken-1" bg-color="transparent" v-model="tab">
+                    <v-tab text="All images" value="All" />
+                    <v-tab text="My images" value="My" />
+                </v-tabs>
+                <v-tabs-window v-model="tab" class="mt-3">
+                    <v-tabs-window-item value="All">
+                        <ImagesComponent :images="images" :check-liked="isImageLiked" @like-click="onLikeUnlike" />
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="My">
+                        <ImagesComponent :images="myImages" :check-liked="isImageLiked" @like-click="onLikeUnlike"
+                            :from="'My'" :tab="tab" @edit="openDialog" />
+                    </v-tabs-window-item>
+                </v-tabs-window>
             </v-col>
         </v-row>
+        <AddImgDialog v-model:openModal="openModal" :imageSrc="imageSrc" @close="onClose" @upload="handleImageUpload"
+            @remove="handleRemoveImage" @Save="onImageSave" />
     </v-card>
 </template>
 
-<style scoped>
-.like {
-    animation: pulse 0.2s linear;
-    color: red;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0;
-    }
-
-    50% {
-        transform: scale(1.3);
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 0;
-    }
-}
-</style>
+<style scoped></style>

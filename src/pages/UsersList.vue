@@ -30,15 +30,12 @@ const onLogin = (item) => {
         name: 'Profile'
     });
     localStorage.setItem('userLoggedin', JSON.stringify(item))
-
 }
 
 const formatDate = (item) => {
     console.log(item)
     return date.format(item,'keyboardDate' )
 }
-
-
 
 </script>
 <template>
