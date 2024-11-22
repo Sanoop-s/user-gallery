@@ -1,10 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import { router } from '../router/routes';
-
+import { useTheme } from 'vuetify'
+import { VCard, VIcon, VSwitch } from 'vuetify/components';
 
 const drawer = ref(true)
+const theme = useTheme()
 
+function toggleTheme () {
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
 
 let userData = JSON.parse(localStorage.getItem('userLoggedin'));
 
@@ -25,8 +30,6 @@ const onLogout = () => {
     })
 }
 
-
-
 </script>
 
 <template>
@@ -39,6 +42,7 @@ const onLogout = () => {
                         style="height: 43px;">
                         <img src="../assets/logo.svg" />
                     </span>
+
                     <v-list class="d-block  py-10 ">
                         <v-list-item class="rounded d-flex align-center font-weight-medium text-subtitle-2"
                             v-for="item in menuItems" :key="item.title" @click="onRoute(item)"
@@ -55,13 +59,16 @@ const onLogout = () => {
                         </v-btn>
                     </template>
                     <v-spacer></v-spacer>
+                    <VCard class="mr-3">
+                        <VIcon icon="mdi-theme-light-dark" @click="toggleTheme" />
+                    </VCard>
                     <v-card class="mr-3">
                         <v-img :src="userData.image" :width="50" />
                     </v-card>
                     <p class="mr-3">{{ userData.firstName }} {{ userData.lastName }}</p>
                     <v-icon icon="mdi-logout" size="large" @click="onLogout"></v-icon>
                 </v-app-bar>
-                <v-main class=" overflow-x-auto bg-grey-lighten-4">
+                <v-main class=" overflow-x-auto ">
                     <router-view class="ma-10 "></router-view>
                 </v-main>
             </v-layout>

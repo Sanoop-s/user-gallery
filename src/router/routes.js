@@ -1,18 +1,27 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import UsersList from '../pages/UsersList.vue';
 import Layout from '../components/layout.vue';
-import Profile from '../pages/Profile.vue';
-import Gallery from '../pages/Gallery.vue';
+
 
 const routes = [
-    { path: '/', component: UsersList, name: 'users' },
+    {
+        path: '/',
+        name: 'users',
+        component: () => import('../pages/UsersList.vue')
+    },
     {
         path: '/',
         component: Layout,
         children: [
-            { path: '/profile', component: Profile, name: 'Profile' },
-            { path: '/gallery', component: Gallery, name: 'Gallery' }
-
+            {
+                path: '/profile',
+                name: 'Profile',
+                component: () => import('../pages/Profile.vue'),
+            },
+            {
+                path: '/gallery',
+                name: 'Gallery',
+                component: () => import('../pages/Gallery.vue'),
+            }
         ]
     }
 ]

@@ -46,6 +46,7 @@ const openPreview = (img,) => {
     </v-row>
     <v-row>
         <v-col :cols="12" sm="6" md="4" lg="3" xl="2" v-for="(image, index) in props.images">
+            <Tramsition></Tramsition>
             <v-card class="d-flex align-center justify-center rounded-lg  pa-5 pb-0 w-100 ma-1">
                 <div class="d-flex align-center justify-center w-100">
                     <div class="w-100">

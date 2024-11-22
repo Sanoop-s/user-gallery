@@ -20,7 +20,13 @@ onMounted(() => {
         isMyImages()
         images.value = imagesData.value
     }
-})
+});
+
+watch(imagesData, () => {
+    myImages.value = []
+    isMyImages()
+
+}, { deep: true })
 
 
 
@@ -55,14 +61,15 @@ const onImageSave = () => {
     if (imageSrc.value !== '') {
         if (editId.value) {
             const index = imagesData.value.findIndex((img) => img.id === editId.value);
-            console.log(imageSrc.value,imagesData.value[index].img)
+            console.log(imageSrc.value, imagesData.value[index].img)
             if (imageSrc.value !== imagesData.value[index].img) {
                 imagesData.value[index].liked_by = []
                 imagesData.value[index].likes = 0
             }
             imagesData.value[index].img = imageSrc.value;
             localStorage.setItem('galleryData', JSON.stringify(imagesData.value));
-            openModal.value = false;
+            imagesData =
+                openModal.value = false;
         } else {
             let data = {
                 id: Math.ceil(Math.random() * 1000000),
@@ -76,7 +83,6 @@ const onImageSave = () => {
             openModal.value = false;
             tab.value = tab.value
         }
-        isMyImages()
 
     } else {
     }
@@ -106,7 +112,6 @@ const onClose = () => {
 
 const isMyImages = () => {
     let currentUserId = userData.id;
-    console.log(imagesData)
     imagesData.value?.forEach(element => {
         if (element.userId === currentUserId) {
             myImages.value.push(element)

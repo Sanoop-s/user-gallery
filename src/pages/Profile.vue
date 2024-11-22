@@ -30,7 +30,7 @@ const formatDate = (item) => {
                     </v-card>
                 </div>
                 <div class="text-center mt-3">
-                    <p class="text-h5 font-weight-bold " style="color: #006171;">{{ userData.firstName }} {{
+                    <p class="text-h5 font-weight-bold text-cyan-darken-4 " >{{ userData.firstName }} {{
                         userData.lastName }}</p>
                     <span class="text-subtitle-2 text-grey-darken-1">{{ formatDate(userData.birthDate) }}</span><span
                         class="text-subtitle-2 text-grey-darken-1"> ({{ userData.age }} years old)</span>
@@ -42,7 +42,7 @@ const formatDate = (item) => {
                 'w-100': $vuetify.display.xs, 'w-100': $vuetify.display.smAndDown,
                 'w-50': $vuetify.display.mdAndUp
             }">
-                <div class="d-flex " style="color: #006171;">
+                <div class="d-flex text-cyan-darken-4" >
                     <span class="text-caption rounded-lg border-sm d-flex justify-center align-center mr-3"
                         style="height: 28px; width: 28px;">
                         <v-icon>mdi-contacts</v-icon>
